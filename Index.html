@@ -308,8 +308,6 @@ footer {
 
 <script>
 
-// ОСНОВНЫЕ ЭЛЕМЕНТЫ
-
 const mic = document.getElementById("mic");
 const input = document.getElementById("input");
 const send = document.getElementById("send");
@@ -320,7 +318,7 @@ const main = document.getElementById("main");
 const connection = document.getElementById("connection");
 
 
-// ГОЛОСОВОЙ ДВИЖОК
+
 
 const SpeechRecognition =
   window.SpeechRecognition ||
@@ -369,7 +367,7 @@ if (SpeechRecognition) {
 }
 
 
-// ОЗВУЧИВАНИЕ
+
 
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
@@ -395,14 +393,14 @@ function speak(text) {
 }
 
 
-// ДОБАВЛЕНИЕ СООБЩЕНИЙ
+
 
 function addMessage(text, type) {
   const message = document.createElement("div");
 
   message.className = "message " + type;
 
-  // Безопасно вставляем обычный текст
+
   message.textContent = text;
 
   chat.appendChild(message);
@@ -410,7 +408,7 @@ function addMessage(text, type) {
 }
 
 
-// ПРОСТОЙ КАЛЬКУЛЯТОР
+
 
 function calculate(text) {
 
@@ -451,7 +449,6 @@ function calculate(text) {
 }
 
 
-// МОЗГ NOVA — ПЕРВЫЕ КОМАНДЫ
 
 function getAnswer(text) {
 
@@ -517,7 +514,7 @@ function getAnswer(text) {
 }
 
 
-// ОБРАБОТКА СООБЩЕНИЯ
+
 
 function processMessage(text) {
 
@@ -547,7 +544,6 @@ function processMessage(text) {
 }
 
 
-// ОТПРАВКА ТЕКСТА
 
 function sendMessage() {
   const text = input.value.trim();
@@ -567,7 +563,7 @@ input.addEventListener("keydown", (event) => {
 });
 
 
-// АКТИВАЦИЯ МИКРОФОНА
+
 
 mic.addEventListener("click", () => {
 
@@ -595,7 +591,7 @@ mic.addEventListener("click", () => {
 });
 
 
-// ЗАПУСК
+
 
 window.speechSynthesis?.getVoices();
 

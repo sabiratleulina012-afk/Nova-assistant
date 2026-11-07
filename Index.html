@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080D19">
+<title>NOVA AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 35%, #142943 0%, #080D19 55%, #050810 100%);
+  color: #EAF5FF;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.app {
+  max-width: 700px;
+  min-height: 100vh;
+  margin: auto;
+  padding: 25px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: #9CEBFF;
+}
+
+.status {
+  color: #65DDBD;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 65px;
+}
+
+.subtitle {
+  color: #7D99B5;
+  font-size: 12px;
+  letter-spacing: 4px;
+  margin-bottom: 30px;
+}
+
+.orb {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: radial-gradient(
+    circle at 40% 35%,
+    #A2F5FF,
+    #258DBF 30%,
+    #12375F 58%,
+    #071323 75%
+  );
+  box-shadow:
+    0 0 25px #39C7FF66,
+    0 0 70px #1689D955,
+    inset 0 0 30px #B3F4FF55;
+  animation: breathe 3s infinite ease-in-out;
+}
+
+.orb::before,
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: -15px;
+  border: 1px solid #53CFFF66;
+  border-radius: 50%;
+  animation: rotate 12s linear infinite;
+}
+
+.orb::after {
+  inset: -27px;
+  border-color: #53CFFF33;
+  animation-direction: reverse;
+  animation-duration: 18s;
+}
+
+.core {
+  font-size: 34px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: white;
+  text-shadow: 0 0 15px white;
+}
+
+@keyframes breathe {
+  50% {
+    transform: scale(1.045);
+    box-shadow: 0 0 50px #39C7FF99,
+                0 0 100px #1689D966;
+  }
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+.listening .orb {
+  animation: breathe .8s infinite ease-in-out;
+  box-shadow: 0 0 70px #50E5FF;
+}
+
+.thinking .orb {
+  animation: rotate 3s linear infinite;
+}
+
+.state {
+  margin-top: 48px;
+  color: #8DC9E8;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+.description {
+  margin-top: 12px;
+  color: #617B96;
+  font-size: 12px;
+}
+
+.chat {
+  width: 100%;
+  margin-top: 35px;
+  min-height: 120px;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  padding: 13px 16px;
+  border-radius: 15px;
+  max-width: 90%;
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.user {
+  align-self: flex-end;
+  background: #153C5B;
+  border: 1px solid #28658A;
+}
+
+.bot {
+  align-self: flex-start;
+  background: #111F31;
+  border: 1px solid #25425C;
+}
+
+.controls {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 25px;
+}
+
+.input-row {
+  display: flex;
+  gap: 9px;
+}
+
+input {
+  min-width: 0;
+  flex: 1;
+  background: #101D2D;
+  color: white;
+  border: 1px solid #29445D;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 14px;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  color: white;
+  font-size: 14px;
+}
+
+.send {
+  padding: 0 19px;
+  border-radius: 14px;
+  background: #176B9C;
+}
+
+.mic {
+  width: 100%;
+  margin-top: 13px;
+  padding: 17px;
+  border-radius: 15px;
+  background: linear-gradient(110deg, #176B9C, #16456D);
+  font-weight: 600;
+  letter-spacing: 2px;
+  box-shadow: 0 0 25px #1689D933;
+}
+
+.mic:active, .send:active {
+  opacity: .7;
+}
+
+.extra {
+  margin-top: 22px;
+  text-align: center;
+  color: #536D87;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+footer {
+  margin-top: 30px;
+  color: #40556C;
+  font-size: 10px;
+  letter-spacing: 3px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">NOVA</div>
+  <div class="status" id="connection">● SYSTEM READY</div>
+</header>
+
+<main id="main">
+
+  <div class="subtitle">PERSONAL AI ASSISTANT</div>
+
+  <div class="orb" id="orb">
+    <div class="core">N</div>
+  </div>
+
+  <div class="state" id="state">СИСТЕМА ГОТОВА</div>
+
+  <div class="description" id="description">
+    Нажми кнопку, чтобы поговорить со мной
+  </div>
+
+</main>
+
+<div class="chat" id="chat">
+  <div class="message bot">
+    Привет! Я NOVA. Пока я работаю в демонстрационном режиме.
+    Могу отвечать на базовые команды и вычисления.
+  </div>
+</div>
+
+<div class="controls">
+
+  <div class="input-row">
+    <input
+      id="input"
+      type="text"
+      placeholder="Напиши сообщение NOVA..."
+      autocomplete="off"
+    >
+    <button class="send" id="send">➤</button>
+  </div>
+
+  <button class="mic" id="mic">
+    🎙  АКТИВИРОВАТЬ NOVA
+  </button>
+
+  <div class="extra">
+    RUSSIAN VOICE RECOGNITION<br>
+    NOVA PERSONAL SYSTEM · VERSION 1.0
+  </div>
+
+</div>
+
+<footer>
+  NOVA INTELLIGENCE PROJECT
+</footer>
+
+</div>
+
+<script>
+
+// ОСНОВНЫЕ ЭЛЕМЕНТЫ
+
+const mic = document.getElementById("mic");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+const chat = document.getElementById("chat");
+const state = document.getElementById("state");
+const description = document.getElementById("description");
+const main = document.getElementById("main");
+const connection = document.getElementById("connection");
+
+
+// ГОЛОСОВОЙ ДВИЖОК
+
+const SpeechRecognition =
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+let recognition = null;
+let isListening = false;
+
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.lang = "ru-RU";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    isListening = true;
+    main.classList.add("listening");
+    state.textContent = "СЛУШАЮ";
+    description.textContent = "Говори, я тебя слушаю";
+    mic.textContent = "● СЛУШАЮ...";
+  };
+
+  recognition.onresult = (event) => {
+    const text = event.results[0][0].transcript;
+    input.value = text;
+    processMessage(text);
+  };
+
+  recognition.onerror = (event) => {
+    state.textContent = "ОШИБКА ГОЛОСА";
+    description.textContent =
+      "Попробуй проверить разрешения микрофона";
+    addMessage("Не удалось распознать голос: " + event.error, "bot");
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    main.classList.remove("listening");
+    mic.textContent = "🎙 АКТИВИРОВАТЬ NOVA";
+  };
+
+} else {
+  mic.textContent = "ГОЛОС НЕДОСТУПЕН";
+  description.textContent =
+    "Используй текстовый ввод или открой Safari";
+}
+
+
+// ОЗВУЧИВАНИЕ
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "ru-RU";
+  speech.rate = 0.95;
+  speech.pitch = 1;
+
+  const voices = window.speechSynthesis.getVoices();
+
+  const russianVoice = voices.find(
+    voice => voice.lang.toLowerCase().startsWith("ru")
+  );
+
+  if (russianVoice) {
+    speech.voice = russianVoice;
+  }
+
+  window.speechSynthesis.speak(speech);
+}
+
+
+// ДОБАВЛЕНИЕ СООБЩЕНИЙ
+
+function addMessage(text, type) {
+  const message = document.createElement("div");
+
+  message.className = "message " + type;
+
+  // Безопасно вставляем обычный текст
+  message.textContent = text;
+
+  chat.appendChild(message);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+
+// ПРОСТОЙ КАЛЬКУЛЯТОР
+
+function calculate(text) {
+
+  let expression = text.toLowerCase()
+    .replace(/,/g, ".")
+    .replace(/умножить на|умножить|помножить на|помножить/g, "*")
+    .replace(/разделить на|разделить/g, "/")
+    .replace(/плюс/g, "+")
+    .replace(/минус/g, "-")
+    .replace(/сколько будет|посчитай|вычисли|сколько/g, "")
+    .replace(/[^0-9+\-*/. ]/g, "")
+    .trim();
+
+  const match = expression.match(
+    /^(-?\d+(?:\.\d+)?)\s*([+\-*/])\s*(-?\d+(?:\.\d+)?)$/
+  );
+
+  if (!match) return null;
+
+  const a = Number(match[1]);
+  const b = Number(match[3]);
+  const operator = match[2];
+
+  let result;
+
+  if (operator === "+") result = a + b;
+  if (operator === "-") result = a - b;
+  if (operator === "*") result = a * b;
+
+  if (operator === "/") {
+    if (b === 0) return "На ноль делить нельзя.";
+    result = a / b;
+  }
+
+  return Number.isFinite(result)
+    ? "Ответ: " + result
+    : "Не получилось выполнить вычисление.";
+}
+
+
+// МОЗГ NOVA — ПЕРВЫЕ КОМАНДЫ
+
+function getAnswer(text) {
+
+  const q = text.toLowerCase().trim();
+
+  if (q.includes("привет")) {
+    return "Привет! Рада тебя слышать. Чем займёмся?";
+  }
+
+  if (q.includes("как тебя зовут")) {
+    return "Меня зовут NOVA. Я твой персональный цифровой помощник.";
+  }
+
+  if (q.includes("который час") ||
+      q.includes("сколько времени")) {
+    return "Сейчас " +
+      new Date().toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+  }
+
+  if (q.includes("какая сегодня дата") ||
+      q.includes("какое сегодня число")) {
+    return "Сегодня " +
+      new Date().toLocaleDateString("ru-RU");
+  }
+
+  if (q.includes("открой youtube")) {
+    window.open("https://www.youtube.com", "_blank");
+    return "Открываю YouTube.";
+  }
+
+  if (q.includes("открой google")) {
+    window.open("https://www.google.com", "_blank");
+    return "Открываю Google.";
+  }
+
+  if (q.includes("кто ты")) {
+    return "Я NOVA — твой экспериментальный голосовой помощник.";
+  }
+
+  if (q.includes("помощь") || q.includes("что ты умеешь")) {
+    return "Я умею приветствовать тебя, сообщать время и дату, считать простые выражения и открывать некоторые сайты. Генеративный ИИ пока не подключён.";
+  }
+
+  if (q.includes("второй закон ньютона")) {
+    return "Второй закон Ньютона: сила равна произведению массы тела на его ускорение. Формула: F равно m умножить на a.";
+  }
+
+  if (q.includes("выключи звук")) {
+    window.speechSynthesis.cancel();
+    return "Голосовой ответ остановлен.";
+  }
+
+  const result = calculate(q);
+
+  if (result !== null) {
+    return result;
+  }
+
+  return "Я пока не подключена к генеративному искусственному интеллекту. Но моя система готова к расширению. Попробуй спросить время, дату или решить пример.";
+}
+
+
+// ОБРАБОТКА СООБЩЕНИЯ
+
+function processMessage(text) {
+
+  if (!text.trim()) return;
+
+  addMessage(text, "user");
+
+  state.textContent = "ОБРАБАТЫВАЮ";
+  description.textContent = "Выполняю запрос";
+
+  main.classList.add("thinking");
+
+  const answer = getAnswer(text);
+
+  setTimeout(() => {
+
+    main.classList.remove("thinking");
+
+    addMessage(answer, "bot");
+
+    state.textContent = "СИСТЕМА ГОТОВА";
+    description.textContent = "Жду следующую команду";
+
+    speak(answer);
+
+  }, 500);
+}
+
+
+// ОТПРАВКА ТЕКСТА
+
+function sendMessage() {
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  input.value = "";
+  processMessage(text);
+}
+
+send.addEventListener("click", sendMessage);
+
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
+});
+
+
+// АКТИВАЦИЯ МИКРОФОНА
+
+mic.addEventListener("click", () => {
+
+  if (!recognition) {
+    addMessage(
+      "Голосовое распознавание недоступно в этом браузере. Попробуй Safari.",
+      "bot"
+    );
+    return;
+  }
+
+  if (isListening) {
+    recognition.stop();
+    return;
+  }
+
+  try {
+    recognition.start();
+  } catch (error) {
+    addMessage(
+      "Не удалось включить микрофон. Попробуй ещё раз.",
+      "bot"
+    );
+  }
+});
+
+
+// ЗАПУСК
+
+window.speechSynthesis?.getVoices();
+
+connection.textContent = "● SYSTEM READY";
+
+</script>
+
+</body>
+</html>
